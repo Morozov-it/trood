@@ -1,0 +1,39 @@
+table {
+    border-collapse: collapse;
+}
+
+.table {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.head {
+    color: grey;
+    border-bottom: 5px solid white;
+}
+.body {
+    font-weight: bold;
+}
+.statusCircul {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 5px;
+}
+.row {
+    border-radius: 5px;
+    overflow: hidden;
+    border-bottom: 5px solid white;
+}
+.row > td {
+    padding: 15px 5px;
+}
+
+tr > td {
+    text-align: center;
+}
+tr > td:first-child {
+    text-align: left;
+}
