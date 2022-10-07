@@ -1,26 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import './styles/App.css'
+import ProgressBar from './components/ProgressBar'
+import Table from './components/Table'
+import { BarItem } from './models'
 
-function App() {
+const items: BarItem[] = [
+  { name: 'Sold', color: '#BD1FBE', value: 677 },
+  { name: 'Got free', color: '#FC64FF', value: 23 },
+  { name: 'Burned', color: '#2bf135', value: 202 },
+  { name: 'Free float', color: '#d7d8d7', value: 323 },
+]
+
+const App = () => {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ProgressBar items={items} width={10} height={20} />
+      <Table />
     </div>
   );
 }
 
-export default App;
+export default App
