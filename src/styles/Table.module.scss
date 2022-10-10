@@ -1,16 +1,26 @@
-table {
-    border-collapse: collapse;
-}
-
 .table {
     display: flex;
     flex-direction: column;
     gap: 10px;
+
+    table {
+        border-collapse: collapse;
+    }
 }
+
 .head {
     color: grey;
     border-bottom: 5px solid white;
 }
+.activeHead {
+    display: flex;
+    gap: 4px;
+
+    div {
+        cursor: pointer;
+    }
+}
+
 .body {
     font-weight: bold;
 }
@@ -26,9 +36,14 @@ table {
     border-radius: 5px;
     overflow: hidden;
     border-bottom: 5px solid white;
+
+    td {
+        padding: 15px 5px;
+    }
 }
-.row > td {
-    padding: 15px 5px;
+
+.noData {
+    text-align: center !important;
 }
 
 tr > td {

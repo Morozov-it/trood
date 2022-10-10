@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react'
-import './styles/App.css'
+import './styles/App.scss'
 import ProgressBar from './components/ProgressBar'
 import Table from './components/Table'
 import { Filters, Sort,  } from './models'
@@ -13,9 +13,9 @@ const App: React.FC = () => {
 
   const onSort = useCallback((sort: Sort | null) => setSort(sort), [])
   const onFilter = useCallback((filters: Filters) => setFilters(filters), [])
-  const onBuy = useCallback((id: number) => alert(`You've bought project with id = ${id}`), [])
-  const sortedData = useMemo(() => getSortedData(sort, tableItems), [sort])
-  const sortedAndFiteredData = useMemo(() => getFilteredData(filters, sortedData), [filters, sortedData])
+  const onBuy = useCallback((id: number) => alert(`You've caught project with id = ${id}`), [])
+  const filteredData = useMemo(() => getFilteredData(filters, tableItems), [filters])
+  const sortedAndFiteredData = useMemo(() => getSortedData(sort, filteredData), [filteredData, sort])
 
   return (
     <div className="App">

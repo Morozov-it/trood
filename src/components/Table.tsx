@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { Filters, Sort, TableItem } from '../models'
-import styles from '../styles/Table.module.css'
+import styles from '../styles/Table.module.scss'
 import { getBackColor } from '../utils/getBackColor'
+import { getSortedArrows } from '../utils/getSortedArrows'
+import TableButton from './TableButton'
+import TableSelect from './TableSelect'
 
 interface Props {
     items: TableItem[]
@@ -13,16 +16,77 @@ interface Props {
 }
 
 const Table: React.FC<Props> = ({ items, filters, sort, onSort, onFilter, onBuy }) => {
+    const handleSort = useCallback((name: Sort | null) => {
+        if (sort === name) {
+            return onSort(`-${name}` as Sort)
+        }
+        if (sort === `-${name}`) {
+            return onSort(null)
+        }
+        onSort(name)
+    }, [onSort, sort])
+
+    const handleFilter = useCallback((name: keyof Filters, value: string) => {
+        onFilter({
+            ...filters,
+            [name]: value === 'all' ? null : value
+        })
+    }, [filters, onFilter])
+
+    //better fetch those catalogs via props as enums
+    const statuses = useMemo(() => ['red', 'green', 'yellow'], [])
+    const types = useMemo(() => ['TRST', 'THT', 'THC'], [])
+
     return (
         <div className={styles.table}>
             <h2>Table</h2>
             <table>
                 <thead className={styles.head}>
                     <tr>
-                        <th>Project</th>
-                        <th>Token type</th>
-                        <th>Conditions</th>
-                        <th>Volume</th>
+                        <th>
+                            <div className={styles.activeHead}>
+                                <TableSelect
+                                    name='status'
+                                    catalog={statuses}
+                                    filter={filters.status}
+                                    handleFilter={handleFilter}
+                                />
+                                <div onClick={() => handleSort('name')}>
+                                    Project
+                                    {getSortedArrows(sort, 'name')}
+                                </div>
+                            </div>
+                        </th>
+                        <th>
+                            <div className={styles.activeHead}>
+                                <TableSelect
+                                    name='type'
+                                    catalog={types}
+                                    filter={filters.type}
+                                    handleFilter={handleFilter}
+                                />
+                                <div onClick={() => handleSort('type')}>
+                                    Token type
+                                    {getSortedArrows(sort, 'type')}
+                                </div>
+                            </div>
+                        </th>
+                        <th>
+                            <div className={styles.activeHead}>
+                                <div onClick={() => handleSort('conditions')}>
+                                    Conditions
+                                    {getSortedArrows(sort, 'conditions')}
+                                </div>
+                            </div>
+                        </th>
+                        <th>
+                            <div className={styles.activeHead}>
+                                <div onClick={() => handleSort('volume')}>
+                                    Volume
+                                    {getSortedArrows(sort, 'volume')}
+                                </div>
+                            </div>
+                        </th>
                         <th>ROI</th>
                         <th>Free float</th>
                         <th>Insurance hedge</th>
@@ -30,21 +94,26 @@ const Table: React.FC<Props> = ({ items, filters, sort, onSort, onFilter, onBuy 
                     </tr>
                 </thead>
                 <tbody className={styles.body}>
-                    {items.map((item) => (
-                        <tr key={item.id} className={styles.row} style={{ backgroundColor: getBackColor(item.status) }}>
-                            <td>
-                                <span className={styles.statusCircul} style={{ background: item.status }} />
-                                <span>{item.name}</span>
-                            </td>
-                            <td>{item.type}</td>
-                            <td>{item.conditions}</td>
-                            <td>{'$' + item.volume.toLocaleString('ru')}</td>
-                            <td>{item.roi + '%'}</td>
-                            <td>{item.free}</td>
-                            <td>{item.hedge + '%'}</td>
-                            <td><button>Buy</button></td>
+                    {items.length ?
+                        items.map((item) => (
+                            <tr key={item.id} className={styles.row} style={{ backgroundColor: getBackColor(item.status) }}>
+                                <td>
+                                    <span className={styles.statusCircul} style={{ background: item.status }} />
+                                    <span>{item.name}</span>
+                                </td>
+                                <td>{item.type}</td>
+                                <td>{item.conditions}</td>
+                                <td>{'$' + item.volume.toLocaleString('ru')}</td>
+                                <td>{item.roi + '%'}</td>
+                                <td>{item.free}</td>
+                                <td>{item.hedge + '%'}</td>
+                                <td><TableButton title='Buy' onClick={() => onBuy(item.id)} /></td>
+                            </tr>
+                        ))
+                        : <tr >
+                            <td colSpan={8} className={styles.noData}>no data</td>
                         </tr>
-                    ))}
+                    }
                 </tbody>
             </table>
         </div>

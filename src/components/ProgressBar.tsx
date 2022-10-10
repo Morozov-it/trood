@@ -1,6 +1,6 @@
 import React from 'react'
 import { BarItem } from '../models'
-import styles from '../styles/ProgressBar.module.css'
+import styles from '../styles/ProgressBar.module.scss'
 
 interface Props {
     items: BarItem[]
