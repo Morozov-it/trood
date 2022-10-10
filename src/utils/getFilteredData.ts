@@ -1,6 +1,8 @@
-import { Filters, TableItem } from '../models'
+import { Filters } from '../models'
 
-export const getFilteredData = (filters: Filters, data: TableItem[]): TableItem[] => {
+export const getFilteredData = <T extends { type: string, status: string },>(filters: Filters, data?: T[]): T[] => {
+    if (!data) return [] as T[]
+
     const activeFilters = Object.entries(filters)
         .filter(group => !!group[1])
         .map(group => group[1])

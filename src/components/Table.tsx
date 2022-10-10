@@ -1,8 +1,10 @@
 import React, { useCallback, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Filters, Sort, TableItem } from '../models'
 import styles from '../styles/Table.module.scss'
 import { getBackColor } from '../utils/getBackColor'
 import { getSortedArrows } from '../utils/getSortedArrows'
+import Spinner from './Spinner'
 import TableButton from './TableButton'
 import TableSelect from './TableSelect'
 
@@ -10,12 +12,15 @@ interface Props {
     items: TableItem[]
     sort: Sort | null
     filters: Filters
+    loading: boolean
     onSort: (sort: Sort | null) => void
     onFilter: (filters: Filters) => void
     onBuy: (id: number) => void
 }
 
-const Table: React.FC<Props> = ({ items, filters, sort, onSort, onFilter, onBuy }) => {
+const Table: React.FC<Props> = ({ items, filters, sort, onSort, onFilter, onBuy, loading }) => {
+    const navigate = useNavigate()
+
     const handleSort = useCallback((name: Sort | null) => {
         if (sort === name) {
             return onSort(`-${name}` as Sort)
@@ -38,7 +43,7 @@ const Table: React.FC<Props> = ({ items, filters, sort, onSort, onFilter, onBuy 
     const types = useMemo(() => ['TRST', 'THT', 'THC'], [])
 
     return (
-        <div className={styles.table}>
+        <section className={styles.table}>
             <h2>Table</h2>
             <table>
                 <thead className={styles.head}>
@@ -94,29 +99,38 @@ const Table: React.FC<Props> = ({ items, filters, sort, onSort, onFilter, onBuy 
                     </tr>
                 </thead>
                 <tbody className={styles.body}>
-                    {items.length ?
-                        items.map((item) => (
-                            <tr key={item.id} className={styles.row} style={{ backgroundColor: getBackColor(item.status) }}>
-                                <td>
-                                    <span className={styles.statusCircul} style={{ background: item.status }} />
-                                    <span>{item.name}</span>
-                                </td>
-                                <td>{item.type}</td>
-                                <td>{item.conditions}</td>
-                                <td>{'$' + item.volume.toLocaleString('ru')}</td>
-                                <td>{item.roi + '%'}</td>
-                                <td>{item.free}</td>
-                                <td>{item.hedge + '%'}</td>
-                                <td><TableButton title='Buy' onClick={() => onBuy(item.id)} /></td>
-                            </tr>
-                        ))
-                        : <tr >
-                            <td colSpan={8} className={styles.noData}>no data</td>
+                    {loading
+                        ?<tr >
+                            <td colSpan={8} className={styles.loading}><Spinner /></td>
                         </tr>
+                        : items.length ?
+                            items.map((item) => (
+                                <tr
+                                    key={item.id}
+                                    className={styles.row}
+                                    style={{ backgroundColor: getBackColor(item.status) }}
+                                    onClick={() => navigate(`/project/${item.id}`)}
+                                >
+                                    <td>
+                                        <span className={styles.statusCircul} style={{ background: item.status }} />
+                                        <span>{item.name}</span>
+                                    </td>
+                                    <td>{item.type}</td>
+                                    <td>{item.conditions}</td>
+                                    <td>{'$' + item.volume.toLocaleString('ru')}</td>
+                                    <td>{item.roi + '%'}</td>
+                                    <td>{item.free}</td>
+                                    <td>{item.hedge + '%'}</td>
+                                    <td><TableButton title='Buy' onClick={() => onBuy(item.id)} /></td>
+                                </tr>
+                            ))
+                            :<tr >
+                                <td colSpan={8} className={styles.noData}>no data</td>
+                            </tr>
                     }
                 </tbody>
             </table>
-        </div>
+        </section>
     )
 }
 

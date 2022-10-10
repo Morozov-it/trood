@@ -12,7 +12,7 @@ const ProgressBar: React.FC<Props> = ({ items, width, height }) => {
     const total = items.reduce((acc, cur) => acc + cur.value, 0)
 
     return (
-        <div className={styles.body}>
+        <section className={styles.body}>
             <h2>Progress bar</h2>
             <div className={styles.barLine}>
                 {items.map((item) => 
@@ -30,7 +30,7 @@ const ProgressBar: React.FC<Props> = ({ items, width, height }) => {
                     </div>
                 ))}
             </div>
-        </div>
+        </section>
     )
 }
 

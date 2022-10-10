@@ -8,7 +8,10 @@ interface Props {
 
 const TableButton: React.FC<Props> = ({ title, onClick }) => {
     return (
-        <button className={styles.button} onClick={onClick}>{title}</button>
+        <button className={styles.button} onClick={(e) => {
+            e.stopPropagation()
+            onClick()
+        }}>{title}</button>
     )
 }
 
